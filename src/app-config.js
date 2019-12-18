@@ -49,13 +49,12 @@ export const appSchema = [
         },
         {
           fieldName: 'granted_components',
-          label: 'Componentes',
+          label: 'Componentes turísticos',
           type: Array,
           cellType: 'ArrayOfChipsCell',
           formType: 'ArraySelectMultipleChipsForm',
           allowedValues: ['rrtt', 'pla', 'iti', 'exp', 'art', 'eve', 'landing-slider', 'pub']
         },
-        // {fieldName: 'granted_endpoints', label: 'Endpoints'},
         {
           fieldName: 'granted_methods',
           label: 'Métodos',
