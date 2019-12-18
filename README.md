@@ -63,7 +63,7 @@ export const appSchema = [
         },
         {
           fieldName: 'granted_components',
-          label: 'Componentes',
+          label: 'Componentes turísticos',
           type: Array,
           cellType: 'ArrayOfChipsCell',
           formType: 'ArraySelectMultipleChipsForm',
