@@ -1,4 +1,4 @@
-# node-rest-api-generator #
+# react-hooks-frontend-generator #
 
 A generator of FrontEnds based on React Hooks.
 
