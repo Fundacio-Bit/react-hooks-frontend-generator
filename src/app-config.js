@@ -5,10 +5,10 @@ export const appSchema = [
       resource: 'users',
       tabLabel: 'Usuarios',
       endpoints: {
-        get: 'http://127.0.0.1:5000/api/users/id/--all--',
-        post: 'http://127.0.0.1:5000/api/users',
-        put: 'http://127.0.0.1:5000/api/users/id/:id',
-        delete: 'http://127.0.0.1:5000/api/users/id/:id'
+        get: 'http://127.0.0.1:5000/users',
+        post: 'http://127.0.0.1:5000/users',
+        put: 'http://127.0.0.1:5000/users/id/:id',
+        delete: 'http://127.0.0.1:5000/users/id/:id'
       },
       columns: [
         {
