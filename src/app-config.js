@@ -2,66 +2,43 @@ export const loginEndpoint = 'http://127.0.0.1:5000/login'
 
 export const appSchema = [
     {
-      resource: 'users',
-      tabLabel: 'Usuarios',
+      resource: 'products',
+      tabLabel: 'Productos',
       endpoints: {
-        get: 'http://127.0.0.1:5000/users',
-        post: 'http://127.0.0.1:5000/users',
-        put: 'http://127.0.0.1:5000/users/id/:id',
-        delete: 'http://127.0.0.1:5000/users/id/:id'
+        get: 'http://127.0.0.1:5000/products',
+        post: 'http://127.0.0.1:5000/products',
+        put: 'http://127.0.0.1:5000/products/:_id',
+        patch: 'http://127.0.0.1:5000/products/:_id',
+        delete: 'http://127.0.0.1:5000/products/:_id'
       },
       columns: [
         {
-          fieldName: 'username',
-          label: 'Usuario',
+          fieldName: 'name',
+          label: 'Nombre',
           type: String,
           cellType: 'StringCell',
           formType: 'StringForm'
         },
         {
-          fieldName: 'pwd',
-          label: 'Contraseña',
+          fieldName: 'product_id',
+          label: 'Id',
           type: String,
           cellType: 'StringCell',
           formType: 'StringForm'
         },
         {
-          fieldName: 'email',
-          label: 'Email',
+          fieldName: 'price',
+          label: 'Precio (€)',
           type: String,
           cellType: 'StringCell',
           formType: 'StringForm'
         },
         {
-          fieldName: 'ip_addresses',
-          label: 'IP\'s',
+          fieldName: 'supplier_id',
+          label: 'Proveedor',
           type: String,
-          cellType: 'ArrayOfIpAddressesCell',
-          formType: 'ArrayOfIpAddressesForm'
-        },
-        {
-          fieldName: 'granted_islands',
-          label: 'Islas',
-          type: Array,
-          cellType: 'ArrayOfChipsCell',
-          formType: 'ArraySelectMultipleChipsForm',
-          allowedValues: ['mallorca', 'menorca', 'ibiza', 'formentera']
-        },
-        {
-          fieldName: 'granted_components',
-          label: 'Componentes turísticos',
-          type: Array,
-          cellType: 'ArrayOfChipsCell',
-          formType: 'ArraySelectMultipleChipsForm',
-          allowedValues: ['rrtt', 'pla', 'iti', 'exp', 'art', 'eve', 'landing-slider', 'pub']
-        },
-        {
-          fieldName: 'granted_methods',
-          label: 'Métodos',
-          type: Array,
-          cellType: 'ArrayOfChipsCell',
-          formType: 'ArraySelectMultipleChipsForm',
-          allowedValues: ['GET', 'POST', 'PUT', 'DELETE']
+          cellType: 'StringCell',
+          formType: 'StringForm'
         }
       ]
     }

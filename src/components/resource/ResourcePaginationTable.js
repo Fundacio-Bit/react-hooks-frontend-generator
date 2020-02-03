@@ -181,50 +181,49 @@ export const ResourcePaginationTable = (props) => {
 
     let reqConfig = {
       method: method,
-      url: props.endpoints[method]
+      url: props.endpoints[method].replace(':_id', selectedItem._id),
+      headers: { authorization: window.sessionStorage.getItem('token') }
     }
 
-    let tokenString = `?token=${window.sessionStorage.getItem('token')}`
-
-    if (method === 'post') {
-      reqConfig.url = `${reqConfig.url}${tokenString}`
-      reqConfig.data = {...selectedItem}
-    } else if (method === 'put') {
-      reqConfig.url = `${reqConfig.url.replace(':id', selectedItem._id)}${tokenString}`
+    if (method !== 'delete') {
       reqConfig.data = {...selectedItem}
       delete reqConfig.data._id
-    } else {  // delete
-      reqConfig.url = `${reqConfig.url.replace(':id', selectedItem._id)}${tokenString}`
     }
 
     axios(reqConfig)
       .then(response => {
-        if (response.data.ok) {
-          // OK
 
-          // Updating page number
-          if (method === 'delete') {
-            if ((props.items.length - 1 - page * rowsPerPage) === 0) {
-              if (page > 0) setPage(page => page - 1)
-            }
-          } else if (method === 'post') {
-            setPage(0)
+        // OK
+
+        // Updating page number
+        if (method === 'delete') {
+          if ((props.items.length - 1 - page * rowsPerPage) === 0) {
+            if (page > 0) setPage(page => page - 1)
           }
-
-          // Refreshing items
-          let request = `${props.endpoints.get}${tokenString}`
-          let timestamp = new Date().getTime()
-          props.refreshItems(`${request}&timestamp=${timestamp.toString()}`)  // Refresh items (on changing the request, the useEffect in ResourceTab is triggered to fetch items)
-        } else {
-          // Error
-          console.log(getErrorMessage(response.data))
-          setErrorStatus({ error: true, message: baseErrorMessage })
+        } else if (method === 'post') {
+          setPage(0)
         }
+
+        // Refreshing items of the table
+        let timestamp = new Date().getTime()
+        props.refreshItems(timestamp.toString())  // here the useEffect in ResourceTab is triggered to fetch items
+
       })
       .catch(error => {
-        // Unknown Error
-        console.error(error)
+        // Error shown in the web page
         setErrorStatus({ error: true, message: baseErrorMessage })
+
+        // Error shown in the console
+        if (error.response) {
+          console.log(getErrorMessage(error.response.data))
+          console.log('Headers:', error.response.headers)
+        } else if (error.request) {
+          console.log('Request:', error.request)
+        } else {
+          console.log('Error:', error.message)
+        }
+
+        console.log('Config:', error.config)
       })
   }
 

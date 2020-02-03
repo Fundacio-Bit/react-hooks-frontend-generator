@@ -18,7 +18,9 @@ export const ResourceTab = (props) => {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(false)
   const [errorStatus, setErrorStatus] = useState({error: false, message: ''})
-  const [request, setRequest] = useState(`${props.endpoints.get}?token=${window.sessionStorage.getItem('token')}`)
+  const [requestTimestamp, setRequestTimestamp] = useState((new Date().getTime()).toString())
+
+  const requestUrl = props.endpoints.get
 
   useEffect(() => {
     let unmounted = false
@@ -30,30 +32,36 @@ export const ResourceTab = (props) => {
       }
 
       try {
-        const response = await axios.get(request)
 
-        if (response.data.ok) {
-          // OK
-          setTimeout(() => {
-            if (!unmounted) {
-              setErrorStatus({error: false, message: ''})
-              setLoading(false)
-              setItems(response.data.items)
-            }
-          }, 850)
-        } else {
-          // Error
+        const response = await axios.get(requestUrl, {
+          headers: { authorization: window.sessionStorage.getItem('token') }
+        })
+
+        // OK
+        setTimeout(() => {
           if (!unmounted) {
-            console.log(getErrorMessage(response.data))
-            setErrorStatus({ error: true, message: baseErrorMessage })
+            setErrorStatus({error: false, message: ''})
             setLoading(false)
+            setItems(response.data)
           }
-        }
+        }, 850)
 
       } catch (error) {
         if (!unmounted) {
-          console.error(error)
+          // Error shown in the web page
           setErrorStatus({ error: true, message: baseErrorMessage })
+
+          // Error shown in the console
+          if (error.response) {
+            console.log(getErrorMessage(error.response.data))
+            console.log('Headers:', error.response.headers)
+          } else if (error.request) {
+            console.log('Request:', error.request)
+          } else {
+            console.log('Error:', error.message)
+          }
+          console.log('Config:', error.config)
+
           setLoading(false)
         }
       }
@@ -63,7 +71,7 @@ export const ResourceTab = (props) => {
 
     return () => unmounted = true
 
-  }, [request])
+  }, [requestUrl, requestTimestamp])
 
   return (
     <div>
@@ -78,7 +86,7 @@ export const ResourceTab = (props) => {
           items={items}
           setItems={setItems}
           endpoints={props.endpoints}
-          refreshItems={setRequest}
+          refreshItems={setRequestTimestamp}
           loading={loading}
         />}
     </div>
