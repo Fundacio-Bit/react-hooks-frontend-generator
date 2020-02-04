@@ -11,71 +11,62 @@ npm install
 ## Configuration
 
 ### 1. Define the App configuration schema in *src/app-config.js*
-~~~
+~~~javascript
 export const loginEndpoint = 'http://127.0.0.1:5000/login'
 
 export const appSchema = [
     {
-      resource: 'users',
-      tabLabel: 'Usuarios',
+      resource: 'products',
+      tabLabel: 'Productos',
       endpoints: {
-        get: 'http://127.0.0.1:5000/api/users/id/--all--',
-        post: 'http://127.0.0.1:5000/api/users',
-        put: 'http://127.0.0.1:5000/api/users/id/:id',
-        delete: 'http://127.0.0.1:5000/api/users/id/:id'
+        get: 'http://127.0.0.1:5000/products',
+        post: 'http://127.0.0.1:5000/products',
+        put: 'http://127.0.0.1:5000/products/<id>',
+        patch: 'http://127.0.0.1:5000/products/<id>',
+        delete: 'http://127.0.0.1:5000/products/<id>'
       },
       columns: [
         {
-          fieldName: 'username',
-          label: 'Usuario',
+          fieldName: '_id',
+          label: '_id',
+          isPrimaryKey: true,
           type: String,
-          cellType: 'StringCell',
-          formType: 'StringForm'
+          cellComponent: 'StringCell',
+          formComponent: 'StringFormDisabled'
         },
         {
-          fieldName: 'pwd',
-          label: 'Contraseña',
+          fieldName: 'name',
+          label: 'Nombre',
           type: String,
-          cellType: 'StringCell',
-          formType: 'StringForm'
+          cellComponent: 'StringCell',
+          formComponent: 'StringForm'
         },
         {
-          fieldName: 'email',
-          label: 'Email',
+          fieldName: 'product_id',
+          label: 'Id producto',
           type: String,
-          cellType: 'StringCell',
-          formType: 'StringForm'
+          cellComponent: 'StringCell',
+          formComponent: 'StringForm'
         },
         {
-          fieldName: 'ip_addresses',
-          label: 'IP\'s',
+          fieldName: 'price',
+          label: 'Precio (€)',
           type: String,
-          cellType: 'ArrayOfIpAddressesCell',
-          formType: 'ArrayOfIpAddressesForm'
+          cellComponent: 'StringCell',
+          formComponent: 'StringForm'
         },
         {
-          fieldName: 'granted_islands',
-          label: 'Islas',
-          type: Array,
-          cellType: 'ArrayOfChipsCell',
-          formType: 'ArraySelectMultipleChipsForm',
-          allowedValues: ['mallorca', 'menorca', 'ibiza', 'formentera']
-        },
-        {
-          fieldName: 'granted_components',
-          label: 'Componentes turísticos',
-          type: Array,
-          cellType: 'ArrayOfChipsCell',
-          formType: 'ArraySelectMultipleChipsForm',
-          allowedValues: ['rrtt', 'pla', 'iti', 'exp', 'art', 'eve', 'landing-slider', 'pub']
-        },
-        {
-          fieldName: 'granted_methods',
-          label: 'Métodos',
-          type: Array,
-          cellType: 'ArrayOfChipsCell',
-          formType: 'ArraySelectMultipleChipsForm',
-          allowedValues: ['GET', 'POST', 'PUT', 'DELETE']
+          fieldName: 'supplier_id',
+          label: 'Proveedor',
+          type: String,
+          cellComponent: 'StringCell',
+          formComponent: 'SelectForm',
+          isForeignKey: {
+            referencedKey: 'supplier_id',
+            endpoints: {
+              get: 'http://127.0.0.1:5000/suppliers'
+            }
+          }
         }
       ]
     }
