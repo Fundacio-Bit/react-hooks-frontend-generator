@@ -4,6 +4,7 @@ export const getErrorMessage = (errorResponseData) => {
   let errorMessage = errorResponseData
 
   if (errorResponseData.error) {
+
     if (errorResponseData.error === 'UNKNOWN_USER') {
       errorMessage = 'Usuario desconocido'
     } else if (errorResponseData.error === 'INVALID_PASSWORD') {
@@ -15,6 +16,7 @@ export const getErrorMessage = (errorResponseData) => {
     } else {
       errorMessage = errorResponseData.error
     }
+
   }
 
   return errorMessage

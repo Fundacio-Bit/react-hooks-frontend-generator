@@ -24,7 +24,7 @@ import { DialogCreateUpdate } from './DialogCreateUpdate'
 import { DialogDelete } from './DialogDelete'
 import { baseErrorMessage, getErrorMessage } from '../utils/getErrorMessage'
 import axios from 'axios'
-import { ArrayOfChipsCell } from './cellTypes/ArrayOfChipsCell'
+import { ArrayOfChipsCell } from './cell-components/ArrayOfChipsCell'
 
 const useStyles1 = makeStyles(theme => ({
   root: {
@@ -142,6 +142,9 @@ const StyledTableRow = withStyles(theme => ({
   },
 }))(TableRow)
 
+// ----------------------------------
+// ResourcePaginationTable component
+// ----------------------------------
 export const ResourcePaginationTable = (props) => {
   const classes = useStyles2()
 
@@ -155,16 +158,20 @@ export const ResourcePaginationTable = (props) => {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.items.length - page * rowsPerPage)
 
+  const primaryKeyField = props.columns.filter(x => x.isPrimaryKey).map(x => x.fieldName)[0]
+
+  // Handle change of page number and rows per page
+  // -----------------------------------------------
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
   }
-
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
 
   // Empty item (with some default values) to be used to create new items
+  // ---------------------------------------------------------------------
   let newItem = {}
   props.columns.forEach(col => {
     if (col.hasOwnProperty('defaultValue')) {
@@ -176,18 +183,20 @@ export const ResourcePaginationTable = (props) => {
     }
   })
 
+  // Handle request to REST API
+  // ---------------------------
   const onAxiosRequest = (method) => {
     setErrorStatus({ error: false, message: '' })
 
     let reqConfig = {
       method: method,
-      url: props.endpoints[method].replace(':_id', selectedItem._id),
+      url: props.endpoints[method].replace('<id>', selectedItem[primaryKeyField]),
       headers: { authorization: window.sessionStorage.getItem('token') }
     }
 
     if (method !== 'delete') {
       reqConfig.data = {...selectedItem}
-      delete reqConfig.data._id
+      delete reqConfig.data[primaryKeyField]
     }
 
     axios(reqConfig)
@@ -286,12 +295,10 @@ export const ResourcePaginationTable = (props) => {
                 <StyledTableRow key={i}>
                   {props.columns.map((col, j) => (
                     <StyledTableCell align="left" key={j}>
-                      {col.cellType === 'StringCell' &&
+                      {col.cellComponent === 'StringCell' &&
                         <span>{row[col.fieldName]}</span>}
-                      {col.cellType === 'ArrayOfChipsCell' &&
+                      {col.cellComponent === 'ArrayOfChipsCell' &&
                         <ArrayOfChipsCell values={row[col.fieldName]} />}
-                      {col.cellType === 'ArrayOfIpAddressesCell' &&
-                        <ArrayOfChipsCell values={row[col.fieldName].split(',').map(x => x.trim()).filter(x => x!=='')} />}
                     </StyledTableCell>
                   ))}
                   <StyledTableCell>
@@ -337,7 +344,7 @@ export const ResourcePaginationTable = (props) => {
         columns={props.columns}
         selectedItem={selectedItem}
         setSelectedItem={setSelectedItem}
-        onSave={() => { selectedItem.hasOwnProperty('_id') ? onAxiosRequest('put') : onAxiosRequest('post') }}
+        onSave={() => { selectedItem.hasOwnProperty(primaryKeyField) ? onAxiosRequest('put') : onAxiosRequest('post') }}
       />
 
       <DialogDelete

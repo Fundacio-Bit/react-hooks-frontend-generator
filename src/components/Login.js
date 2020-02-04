@@ -58,25 +58,31 @@ export const Login = (props) => {
   const handleClickButton = () => {
     if (username === '') return setLoginStatus({error: true, message: 'Debe rellenar el campo Nombre de usuario'})
     if (pwd === '') return setLoginStatus({error: true, message: 'Debe rellenar el campo Contraseña'})
-    setLoginStatus({error: false, message: ''})
+    setLoginStatus({ error: false, message: '' })
 
     // Connect to login endpoint
     // --------------------------
     axios.post(props.endpoint, { username: username, pwd: pwd })
       .then(response => {
-        if (response.data.ok) {
-          // OK. Set session parameters
-          window.sessionStorage.setItem('token', response.data.token)
-          props.setLoggedProfile(username)
-          props.setIsLogged(true)
-        } else {
-          // Error
-          setLoginStatus({ error: true, message: getErrorMessage(response.data) })
-        }
+
+        // OK. Set session parameters
+
+        window.sessionStorage.setItem('token', response.data.token)
+        props.setLoggedProfile(username)
+        props.setIsLogged(true)
       })
       .catch(error => {
-        console.error(error)
-        setLoginStatus({ error: true, message: baseErrorMessage })
+        if (error.response) {
+          setLoginStatus({ error: true, message: getErrorMessage(error.response.data) })
+        } else {
+          setLoginStatus({ error: true, message: baseErrorMessage })
+          if (error.request) {
+            console.log('Request:', error.request)
+          } else {
+            console.log('Error:', error.message)
+          }
+        }
+        console.log('Config:', error.config)
       })
   }
 

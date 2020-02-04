@@ -7,9 +7,9 @@ import Toolbar from '@material-ui/core/Toolbar'
 import SaveIcon from '@material-ui/icons/Save'
 import CloseIcon from '@material-ui/icons/Close'
 import Slide from '@material-ui/core/Slide'
-import { StringForm } from './formTypes/StringForm'
-import { ArraySelectMultipleChipsForm } from './formTypes/ArraySelectMultipleChipsForm'
-import { ArrayOfIpAddressesForm } from './formTypes/ArrayOfIpAddressesForm'
+import { StringForm } from './form-components/StringForm'
+import { StringFormDisabled } from './form-components/StringFormDisabled'
+import { SelectForm } from './form-components/SelectForm'
 
 const useStyles = makeStyles(theme => ({
   cellSection: {
@@ -38,7 +38,7 @@ export const DialogCreateUpdate = (props) => {
     let forms = []
 
     props.columns.forEach((column, index) => {
-      if (column.formType === 'StringForm') {
+      if (column.formComponent === 'StringForm') {
         forms.push(
           <StringForm
             key={index}
@@ -48,23 +48,23 @@ export const DialogCreateUpdate = (props) => {
             onChange={(e) => { handleChangeColumnValue(column.fieldName, e.target.value) }}
           />
         )
-      } else if (column.formType === 'ArraySelectMultipleChipsForm') {
+      } else if (column.formComponent === 'StringFormDisabled') {
         forms.push(
-          <ArraySelectMultipleChipsForm
+          <StringFormDisabled
             key={index}
             columnLabel={column.label}
             columnFieldName={column.fieldName}
-            allowedValues={column.allowedValues}
             value={props.selectedItem[column.fieldName]}
             onChange={(e) => { handleChangeColumnValue(column.fieldName, e.target.value) }}
           />
         )
-      } else if (column.formType === 'ArrayOfIpAddressesForm') {
+      } else if (column.formComponent === 'SelectForm') {
         forms.push(
-          <ArrayOfIpAddressesForm
+          <SelectForm
             key={index}
             columnLabel={column.label}
             columnFieldName={column.fieldName}
+            foreignKey={column.isForeignKey}
             value={props.selectedItem[column.fieldName]}
             onChange={(e) => { handleChangeColumnValue(column.fieldName, e.target.value) }}
           />

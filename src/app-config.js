@@ -7,38 +7,52 @@ export const appSchema = [
       endpoints: {
         get: 'http://127.0.0.1:5000/products',
         post: 'http://127.0.0.1:5000/products',
-        put: 'http://127.0.0.1:5000/products/:_id',
-        patch: 'http://127.0.0.1:5000/products/:_id',
-        delete: 'http://127.0.0.1:5000/products/:_id'
+        put: 'http://127.0.0.1:5000/products/<id>',
+        patch: 'http://127.0.0.1:5000/products/<id>',
+        delete: 'http://127.0.0.1:5000/products/<id>'
       },
       columns: [
+        {
+          fieldName: '_id',
+          label: '_id',
+          isPrimaryKey: true,
+          type: String,
+          cellComponent: 'StringCell',
+          formComponent: 'StringFormDisabled'
+        },
         {
           fieldName: 'name',
           label: 'Nombre',
           type: String,
-          cellType: 'StringCell',
-          formType: 'StringForm'
+          cellComponent: 'StringCell',
+          formComponent: 'StringForm'
         },
         {
           fieldName: 'product_id',
-          label: 'Id',
+          label: 'Id producto',
           type: String,
-          cellType: 'StringCell',
-          formType: 'StringForm'
+          cellComponent: 'StringCell',
+          formComponent: 'StringForm'
         },
         {
           fieldName: 'price',
           label: 'Precio (€)',
           type: String,
-          cellType: 'StringCell',
-          formType: 'StringForm'
+          cellComponent: 'StringCell',
+          formComponent: 'StringForm'
         },
         {
           fieldName: 'supplier_id',
           label: 'Proveedor',
           type: String,
-          cellType: 'StringCell',
-          formType: 'StringForm'
+          cellComponent: 'StringCell',
+          formComponent: 'SelectForm',
+          isForeignKey: {
+            referencedKey: 'supplier_id',
+            endpoints: {
+              get: 'http://127.0.0.1:5000/suppliers'
+            }
+          }
         }
       ]
     }
