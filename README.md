@@ -18,13 +18,7 @@ export const appSchema = [
     {
       resource: 'products',
       tabLabel: 'Productos',
-      endpoints: {
-        get: 'http://127.0.0.1:5000/products',
-        post: 'http://127.0.0.1:5000/products',
-        put: 'http://127.0.0.1:5000/products/<id>',
-        patch: 'http://127.0.0.1:5000/products/<id>',
-        delete: 'http://127.0.0.1:5000/products/<id>'
-      },
+      restEndpoint: 'http://127.0.0.1:5000/products',
       columns: [
         {
           fieldName: '_id',
