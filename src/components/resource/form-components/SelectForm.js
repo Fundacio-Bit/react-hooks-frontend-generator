@@ -35,23 +35,21 @@ export const SelectForm = ({ columnLabel, columnFieldName, foreignKey, value }) 
         if (!unmounted) {
           setValues(response.data)
           setSelectedValue(value)
-          console.log(JSON.stringify(response.data))
+          // console.log(JSON.stringify(response.data))
         }
 
       } catch (error) {
-        if (!unmounted) {
-          // Error shown in the console
-          if (error.response) {
-            console.log(getErrorMessage(error.response.data))
-            console.log('Headers:', error.response.headers)
-          } else if (error.request) {
-            console.log('Request:', error.request)
-          } else {
-            console.log('Error:', error.message)
-          }
-          console.log('Config:', error.config)
+        // Error shown in the console
+        if (error.response) {
+          console.log(getErrorMessage(error.response.data))
+        } else if (error.request) {
+          console.log('Request:', error.request)
+        } else {
+          console.log('Error:', error.message)
         }
+        console.log('Config:', error.config)
       }
+
     }
 
     fetchData()
