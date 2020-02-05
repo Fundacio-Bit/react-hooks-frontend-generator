@@ -20,7 +20,7 @@ export const SelectForm = ({ columnLabel, columnFieldName, foreignKey, value }) 
   const [selectedValue, setSelectedValue] = useState('')  // important: initial value for Select component must be set to ''.
   const [values, setValues] = useState([])
 
-  const requestUrl = foreignKey.endpoints.get
+  const requestUrl = foreignKey.endpoint
 
   useEffect(() => {
     let unmounted = false

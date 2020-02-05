@@ -43,9 +43,7 @@ export const appSchema = [
           formComponent: 'SelectForm',
           isForeignKey: {
             referencedKey: 'supplier_id',
-            endpoints: {
-              get: 'http://127.0.0.1:5000/suppliers'
-            }
+            endpoint: 'http://127.0.0.1:5000/suppliers'
           }
         }
       ]
