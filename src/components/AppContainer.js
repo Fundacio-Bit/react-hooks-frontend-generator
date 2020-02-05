@@ -17,6 +17,7 @@ export const AppContainer = (props) => {
             <Tab
               key={resource.resource}
               label={resource.tabLabel}
+              style={{ fontSize: 12 }}
             />
           ))}
         </Tabs>

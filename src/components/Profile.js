@@ -20,7 +20,7 @@ export const Profile = (props) => {
         aria-haspopup="true"
         onClick={event => setAnchorEl(event.currentTarget)}
       >
-        {props.username}&nbsp;&nbsp;
+        <span style={{ fontSize: 11.5 }}>{props.username}</span>&nbsp;&nbsp;
         <AccountCircleIcon />
       </Button>
       <Menu
