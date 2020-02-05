@@ -145,7 +145,7 @@ const StyledTableRow = withStyles(theme => ({
 // ----------------------------------
 // ResourcePaginationTable component
 // ----------------------------------
-export const ResourcePaginationTable = (props) => {
+export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading, setTimestamp }) => {
   const classes = useStyles2()
 
   const [page, setPage] = useState(0)
@@ -156,9 +156,9 @@ export const ResourcePaginationTable = (props) => {
   const [selectedItem, setSelectedItem] = useState({})
   const [errorStatus, setErrorStatus] = useState({error: false, message: ''})
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.items.length - page * rowsPerPage)
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, items.length - page * rowsPerPage)
 
-  const primaryKeyField = props.columns.filter(x => x.isPrimaryKey).map(x => x.fieldName)[0]
+  const primaryKeyField = columns.filter(x => x.isPrimaryKey).map(x => x.fieldName)[0]
 
   // Handle change of page number and rows per page
   // -----------------------------------------------
@@ -173,7 +173,7 @@ export const ResourcePaginationTable = (props) => {
   // Empty item (with some default values) to be used to create new items
   // ---------------------------------------------------------------------
   let newItem = {}
-  props.columns.forEach(col => {
+  columns.forEach(col => {
     if (col.hasOwnProperty('defaultValue')) {
       newItem[col.fieldName] = col.defaultValue
     } else {
@@ -190,13 +190,10 @@ export const ResourcePaginationTable = (props) => {
 
     let reqConfig = {
       method: method,
-      url: props.endpoints[method].replace('<id>', selectedItem[primaryKeyField]),
+      baseURL: restEndpoint,
+      url: method !== 'post' ? `/${selectedItem[primaryKeyField]}` : '',
+      data: method !== 'delete' ? {...selectedItem} : {},
       headers: { authorization: window.sessionStorage.getItem('token') }
-    }
-
-    if (method !== 'delete') {
-      reqConfig.data = {...selectedItem}
-      delete reqConfig.data[primaryKeyField]
     }
 
     axios(reqConfig)
@@ -206,7 +203,7 @@ export const ResourcePaginationTable = (props) => {
 
         // Updating page number
         if (method === 'delete') {
-          if ((props.items.length - 1 - page * rowsPerPage) === 0) {
+          if ((items.length - 1 - page * rowsPerPage) === 0) {
             if (page > 0) setPage(page => page - 1)
           }
         } else if (method === 'post') {
@@ -215,8 +212,7 @@ export const ResourcePaginationTable = (props) => {
 
         // Refreshing items of the table
         let timestamp = new Date().getTime()
-        props.refreshItems(timestamp.toString())  // here the useEffect in ResourceTab is triggered to fetch items
-
+        setTimestamp(timestamp.toString())  // here the useEffect in ResourceTab is triggered to fetch items
       })
       .catch(error => {
         // Error shown in the web page
@@ -225,13 +221,11 @@ export const ResourcePaginationTable = (props) => {
         // Error shown in the console
         if (error.response) {
           console.log(getErrorMessage(error.response.data))
-          console.log('Headers:', error.response.headers)
         } else if (error.request) {
           console.log('Request:', error.request)
         } else {
           console.log('Error:', error.message)
         }
-
         console.log('Config:', error.config)
       })
   }
@@ -245,7 +239,7 @@ export const ResourcePaginationTable = (props) => {
       )
     }
     else {
-      if (props.loading) {
+      if (loading) {
         return (
           <div className={classes.loading}>
             <CircularProgress size={24} thickness={4} />
@@ -263,7 +257,7 @@ export const ResourcePaginationTable = (props) => {
     <div>
       <Toolbar variant="dense">
         {showErrorStatusOrLoading()}
-        {!props.loading &&
+        {!loading &&
           <Button variant="contained" color="primary" size="small" className={classes.button} onClick={() => { setSelectedItem({...newItem}); setErrorStatus({ error: false, message: '' }); setOpenDialog(true) }}>
             Crear Entrada
           </Button>}
@@ -274,7 +268,7 @@ export const ResourcePaginationTable = (props) => {
           <Table className={classes.table} size="small">
             <TableHead>
               <TableRow>
-                {props.columns.map((col, index) => (
+                {columns.map((col, index) => (
                   <StyledTableCell align="left" key={index}>
                     {col.label.toUpperCase()}
                   </StyledTableCell>
@@ -289,11 +283,11 @@ export const ResourcePaginationTable = (props) => {
             </TableHead>
             <TableBody>
               {(rowsPerPage > 0
-                ? props.items.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                : props.items
+                ? items.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                : items
               ).map((row, i) => (
                 <StyledTableRow key={i}>
-                  {props.columns.map((col, j) => (
+                  {columns.map((col, j) => (
                     <StyledTableCell align="left" key={j}>
                       {col.cellComponent === 'StringCell' &&
                         <span>{row[col.fieldName]}</span>}
@@ -302,12 +296,12 @@ export const ResourcePaginationTable = (props) => {
                     </StyledTableCell>
                   ))}
                   <StyledTableCell>
-                    <Button size={'small'} onClick={() => { setSelectedItem({...row}); setErrorStatus({ error: false, message: '' }); setOpenDialog(true) }} disabled={props.loading}>
+                    <Button size={'small'} onClick={() => { setSelectedItem({...row}); setErrorStatus({ error: false, message: '' }); setOpenDialog(true) }} disabled={loading}>
                       <EditOutlinedIcon />
                     </Button>
                   </StyledTableCell>
                   <StyledTableCell>
-                    <Button size={'small'} onClick={() => { setSelectedItem({...row}); setErrorStatus({ error: false, message: '' }); setOpenDialogDelete(true) }} disabled={props.loading}>
+                    <Button size={'small'} onClick={() => { setSelectedItem({...row}); setErrorStatus({ error: false, message: '' }); setOpenDialogDelete(true) }} disabled={loading}>
                       <DeleteOutlinedIcon />
                     </Button>
                   </StyledTableCell>
@@ -315,17 +309,17 @@ export const ResourcePaginationTable = (props) => {
               ))}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={props.columns.length + 2} />
+                  <TableCell colSpan={columns.length + 2} />
                 </TableRow>
               )}
             </TableBody>
-            {!props.loading &&
+            {!loading &&
               <TableFooter>
                 <TableRow>
                   <TablePagination
                     rowsPerPageOptions={[5, 10, 15]}
-                    colSpan={props.columns.length + 2}
-                    count={props.items.length}
+                    colSpan={columns.length + 2}
+                    count={items.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
@@ -341,7 +335,7 @@ export const ResourcePaginationTable = (props) => {
       <DialogCreateUpdate
         open={openDialog}
         setOpen={setOpenDialog}
-        columns={props.columns}
+        columns={columns}
         selectedItem={selectedItem}
         setSelectedItem={setSelectedItem}
         onSave={() => { selectedItem.hasOwnProperty(primaryKeyField) ? onAxiosRequest('put') : onAxiosRequest('post') }}
@@ -350,7 +344,7 @@ export const ResourcePaginationTable = (props) => {
       <DialogDelete
         open={openDialogDelete}
         setOpen={setOpenDialogDelete}
-        itemFirstField={selectedItem[props.columns[0].fieldName]}
+        itemFirstField={selectedItem[columns[0].fieldName]}
         onDelete={() => { onAxiosRequest('delete') }}
       />
     </div>

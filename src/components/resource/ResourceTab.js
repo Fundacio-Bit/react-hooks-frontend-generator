@@ -12,15 +12,13 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const ResourceTab = (props) => {
+export const ResourceTab = ({ restEndpoint, columns }) => {
   const classes = useStyles()
 
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(false)
   const [errorStatus, setErrorStatus] = useState({error: false, message: ''})
-  const [requestTimestamp, setRequestTimestamp] = useState((new Date().getTime()).toString())
-
-  const requestUrl = props.endpoints.get
+  const [timestamp, setTimestamp] = useState((new Date().getTime()).toString())
 
   useEffect(() => {
     let unmounted = false
@@ -32,8 +30,7 @@ export const ResourceTab = (props) => {
       }
 
       try {
-
-        const response = await axios.get(requestUrl, {
+        const response = await axios.get(restEndpoint, {
           headers: { authorization: window.sessionStorage.getItem('token') }
         })
 
@@ -54,7 +51,6 @@ export const ResourceTab = (props) => {
           // Error shown in the console
           if (error.response) {
             console.log(getErrorMessage(error.response.data))
-            console.log('Headers:', error.response.headers)
           } else if (error.request) {
             console.log('Request:', error.request)
           } else {
@@ -65,13 +61,14 @@ export const ResourceTab = (props) => {
           setLoading(false)
         }
       }
+
     }
 
     fetchData()
 
     return () => unmounted = true
 
-  }, [requestUrl, requestTimestamp])
+  }, [restEndpoint, timestamp])
 
   return (
     <div>
@@ -82,12 +79,11 @@ export const ResourceTab = (props) => {
 
       {!errorStatus.error &&
         <ResourcePaginationTable
-          columns={props.columns}
+          restEndpoint={restEndpoint}
+          columns={columns}
           items={items}
-          setItems={setItems}
-          endpoints={props.endpoints}
-          refreshItems={setRequestTimestamp}
           loading={loading}
+          setTimestamp={setTimestamp}
         />}
     </div>
   )

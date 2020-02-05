@@ -25,7 +25,7 @@ export const AppContainer = (props) => {
         activeTab === index &&
           <ResourceTab
             key={index}
-            endpoints={resource.endpoints}
+            restEndpoint={resource.restEndpoint}
             columns={resource.columns}
           />
       ))}
