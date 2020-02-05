@@ -42,8 +42,9 @@ export const appSchema = [
           cellComponent: 'StringCell',
           formComponent: 'SelectForm',
           isForeignKey: {
-            referencedKey: 'supplier_id',
-            endpoint: 'http://127.0.0.1:5000/suppliers'
+            endpoint: 'http://127.0.0.1:5000/suppliers',
+            idField: 'supplier_id',
+            nameField: 'name'
           }
         }
       ]

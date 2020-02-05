@@ -15,19 +15,17 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const SelectForm = ({ columnLabel, columnFieldName, foreignKey, value }) => {
+export const SelectForm = ({ columnLabel, columnFieldName, endpoint, value, idField, nameField }) => {
   const classes = useStyles()
   const [selectedValue, setSelectedValue] = useState('')  // important: initial value for Select component must be set to ''.
   const [values, setValues] = useState([])
-
-  const requestUrl = foreignKey.endpoint
 
   useEffect(() => {
     let unmounted = false
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(requestUrl, {
+        const response = await axios.get(endpoint, {
           headers: { authorization: window.sessionStorage.getItem('token') }
         })
 
@@ -56,7 +54,7 @@ export const SelectForm = ({ columnLabel, columnFieldName, foreignKey, value }) 
 
     return () => unmounted = true
 
-  }, [requestUrl, value])
+  }, [endpoint, value])
 
   const handleChange = event => {
     setSelectedValue(event.target.value)
@@ -72,7 +70,7 @@ export const SelectForm = ({ columnLabel, columnFieldName, foreignKey, value }) 
           onChange={handleChange}
         >
         {values.map((item, index) => (
-          <MenuItem key={index} value={item.supplier_id}>{item.name}</MenuItem>
+          <MenuItem key={index} value={item[idField]}>{item[nameField]}</MenuItem>
         ))}
         </Select>
       </FormControl>

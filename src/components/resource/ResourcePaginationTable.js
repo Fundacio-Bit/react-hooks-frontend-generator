@@ -68,7 +68,7 @@ const StyledTableCell = withStyles(theme => ({
 const StyledTableRow = withStyles(theme => ({
   root: {
     '&:nth-of-type(odd)': {
-      backgroundColor: '#efefef',
+      backgroundColor: '#f3f3f3',
     },
   },
 }))(TableRow)
@@ -225,12 +225,12 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
                   ))}
                   <StyledTableCell>
                     <Button size={'small'} onClick={() => { setSelectedItem({...row}); setErrorStatus({ error: false, message: '' }); setOpenDialog(true) }} disabled={loading}>
-                      <EditOutlinedIcon fontSize="small" />
+                      <EditOutlinedIcon fontSize="small" style={{ color: '#252525' }} />
                     </Button>
                   </StyledTableCell>
                   <StyledTableCell>
                     <Button size={'small'} onClick={() => { setSelectedItem({...row}); setErrorStatus({ error: false, message: '' }); setOpenDialogDelete(true) }} disabled={loading}>
-                      <DeleteOutlinedIcon fontSize="small" />
+                      <DeleteOutlinedIcon fontSize="small" style={{ color: '#252525' }} />
                     </Button>
                   </StyledTableCell>
                 </StyledTableRow>
