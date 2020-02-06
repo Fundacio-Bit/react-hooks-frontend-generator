@@ -12,6 +12,7 @@ npm install
 
 ### 1. Define the App configuration schema in *src/app-config.js*
 ~~~javascript
+export const enableLogin = false
 export const loginEndpoint = 'http://127.0.0.1:5000/login'
 
 export const appSchema = [
@@ -56,10 +57,9 @@ export const appSchema = [
           cellComponent: 'StringCell',
           formComponent: 'SelectForm',
           isForeignKey: {
-            referencedKey: 'supplier_id',
-            endpoints: {
-              get: 'http://127.0.0.1:5000/suppliers'
-            }
+            endpoint: 'http://127.0.0.1:5000/suppliers',
+            idField: 'supplier_id',
+            nameField: 'name'
           }
         }
       ]

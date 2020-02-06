@@ -65,10 +65,10 @@ export const DialogCreateUpdate = (props) => {
             columnLabel={column.label}
             columnFieldName={column.fieldName}
             value={props.selectedItem[column.fieldName]}
-            onChange={(e) => { handleChangeColumnValue(column.fieldName, e.target.value) }}
             endpoint={column.isForeignKey.endpoint}
             idField={column.isForeignKey.idField}
             nameField={column.isForeignKey.nameField}
+            onChange={(e) => { handleChangeColumnValue(column.fieldName, e.target.value) }}
           />
         )
       }

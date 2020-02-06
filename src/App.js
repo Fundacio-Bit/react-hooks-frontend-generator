@@ -7,6 +7,7 @@ import { Profile } from './components/Profile'
 import { Login } from './components/Login'
 import { AppContainer } from './components/AppContainer'
 import { loginEndpoint } from './app-config'
+import { enableLogin } from './app-config'
 
 const useStyles = makeStyles({
   grow: {
@@ -27,23 +28,21 @@ export const App = () => {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             FrontEnd Generator
           </Typography>
-          {isLogged &&
+          {enableLogin && isLogged &&
             <Profile
               username={loggedProfile}
               cleaningLoginSession={() => { setIsLogged(false); window.sessionStorage.clear() }}
             />}
         </Toolbar>
       </AppBar>
-      {!isLogged &&
+      {enableLogin && !isLogged &&
         <Login
           endpoint={loginEndpoint}
           setIsLogged={setIsLogged}
           setLoggedProfile={setLoggedProfile}
         />}
-      {isLogged &&
-        <AppContainer
-          isLogged={isLogged}
-        />}
+      {(!enableLogin || isLogged) &&
+        <AppContainer />}
     </div>
   )
 }

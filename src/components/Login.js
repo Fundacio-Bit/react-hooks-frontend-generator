@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const Login = (props) => {
+export const Login = ({ endpoint, setLoggedProfile, setIsLogged }) => {
   const classes = useStyles()
 
   const [username, setUsername] = useState('')
@@ -62,14 +62,14 @@ export const Login = (props) => {
 
     // Connect to login endpoint
     // --------------------------
-    axios.post(props.endpoint, { username: username, pwd: pwd })
+    axios.post(endpoint, { username: username, pwd: pwd })
       .then(response => {
 
         // OK. Set session parameters
 
         window.sessionStorage.setItem('token', response.data.token)
-        props.setLoggedProfile(username)
-        props.setIsLogged(true)
+        setLoggedProfile(username)
+        setIsLogged(true)
       })
       .catch(error => {
         if (error.response) {

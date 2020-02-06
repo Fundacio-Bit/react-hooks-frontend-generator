@@ -5,7 +5,7 @@ import Tab from '@material-ui/core/Tab'
 import { appSchema } from '../app-config'
 import { ResourceTab } from './resource/ResourceTab'
 
-export const AppContainer = (props) => {
+export const AppContainer = () => {
 
   const [activeTab, setActiveTab] = useState(0)
 
@@ -15,8 +15,8 @@ export const AppContainer = (props) => {
         <Tabs value={activeTab} onChange={(event, value) => { setActiveTab(value) }}>
           {appSchema.map(resource => (
             <Tab
-              key={resource.resource}
-              label={resource.tabLabel}
+              key={resource.resourceId}
+              label={resource.resourceTabLabel}
               style={{ fontSize: 12 }}
             />
           ))}

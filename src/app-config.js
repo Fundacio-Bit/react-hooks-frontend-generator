@@ -1,9 +1,10 @@
+export const enableLogin = false
 export const loginEndpoint = 'http://127.0.0.1:5000/login'
 
 export const appSchema = [
     {
-      resource: 'products',
-      tabLabel: 'Productos',
+      resourceId: 'products',
+      resourceTabLabel: 'Productos',
       restEndpoint: 'http://127.0.0.1:5000/products',
       columns: [
         {
