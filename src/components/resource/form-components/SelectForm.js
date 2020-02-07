@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const SelectForm = ({ columnLabel, columnFieldName, endpoint, value, idField, nameField }) => {
+export const SelectForm = ({ columnLabel, columnFieldName, endpoint, value, idField, shownFields }) => {
   const classes = useStyles()
   const [selectedValue, setSelectedValue] = useState('')  // important: initial value for Select component must be set to ''.
   const [values, setValues] = useState([])
@@ -70,7 +70,7 @@ export const SelectForm = ({ columnLabel, columnFieldName, endpoint, value, idFi
           onChange={handleChange}
         >
         {values.map((item, index) => (
-          <MenuItem key={index} value={item[idField]}>{item[nameField]}</MenuItem>
+          <MenuItem key={index} value={item[idField]}>{shownFields.map((x, i) => i === 0 ? item[x] : `[${item[x]}]`).join(' ')}</MenuItem>
         ))}
         </Select>
       </FormControl>

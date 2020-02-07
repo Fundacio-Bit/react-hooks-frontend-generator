@@ -8,7 +8,6 @@ import SaveIcon from '@material-ui/icons/Save'
 import CloseIcon from '@material-ui/icons/Close'
 import Slide from '@material-ui/core/Slide'
 import { StringForm } from './form-components/StringForm'
-import { StringFormDisabled } from './form-components/StringFormDisabled'
 import { SelectForm } from './form-components/SelectForm'
 
 const useStyles = makeStyles(theme => ({
@@ -38,27 +37,9 @@ export const DialogCreateUpdate = (props) => {
     let forms = []
 
     props.columns.forEach((column, index) => {
-      if (column.formComponent === 'StringForm') {
-        forms.push(
-          <StringForm
-            key={index}
-            columnLabel={column.label}
-            columnFieldName={column.fieldName}
-            value={props.selectedItem[column.fieldName]}
-            onChange={(e) => { handleChangeColumnValue(column.fieldName, e.target.value) }}
-          />
-        )
-      } else if (column.formComponent === 'StringFormDisabled') {
-        forms.push(
-          <StringFormDisabled
-            key={index}
-            columnLabel={column.label}
-            columnFieldName={column.fieldName}
-            value={props.selectedItem[column.fieldName]}
-            onChange={(e) => { handleChangeColumnValue(column.fieldName, e.target.value) }}
-          />
-        )
-      } else if (column.formComponent === 'SelectForm') {
+      let disabled = (column.isPrimaryKey || column.notEditable) ? true : false
+
+      if (column.isForeignKey) {
         forms.push(
           <SelectForm
             key={index}
@@ -67,10 +48,21 @@ export const DialogCreateUpdate = (props) => {
             value={props.selectedItem[column.fieldName]}
             endpoint={column.isForeignKey.endpoint}
             idField={column.isForeignKey.idField}
-            nameField={column.isForeignKey.nameField}
+            shownFields={column.isForeignKey.shownFields}
             onChange={(e) => { handleChangeColumnValue(column.fieldName, e.target.value) }}
           />
         )
+      } else {
+          forms.push(
+            <StringForm
+              key={index}
+              disabled={disabled}
+              columnLabel={column.label}
+              columnFieldName={column.fieldName}
+              value={props.selectedItem[column.fieldName]}
+              onChange={(e) => { handleChangeColumnValue(column.fieldName, e.target.value) }}
+            />
+          )
       }
     })
 

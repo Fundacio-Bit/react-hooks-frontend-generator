@@ -18,7 +18,7 @@ import { DialogCreateUpdate } from './DialogCreateUpdate'
 import { DialogDelete } from './DialogDelete'
 import { baseErrorMessage, getErrorMessage } from '../utils/getErrorMessage'
 import axios from 'axios'
-import { ArrayOfChipsCell } from './cell-components/ArrayOfChipsCell'
+// import { ArrayOfChipsCell } from './cell-components/ArrayOfChipsCell'
 import { TablePaginationActions } from './TablePaginationActions'
 
 const useStyles2 = makeStyles(theme => ({
@@ -217,10 +217,7 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
                 <StyledTableRow key={i}>
                   {columns.map((col, j) => (
                     <StyledTableCell align="left" key={j}>
-                      {col.cellComponent === 'StringCell' &&
-                        <span>{row[col.fieldName]}</span>}
-                      {col.cellComponent === 'ArrayOfChipsCell' &&
-                        <ArrayOfChipsCell values={row[col.fieldName]} />}
+                      {row[col.fieldName]}
                     </StyledTableCell>
                   ))}
                   <StyledTableCell>

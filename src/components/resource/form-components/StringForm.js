@@ -8,21 +8,22 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const StringForm = (props) => {
+export const StringForm = ({ disabled, columnLabel, columnFieldName, value, onChange}) => {
   const classes = useStyles()
 
   return (
     <form className={classes.form} onSubmit={e => { e.preventDefault() }} autoComplete="off">
       <TextField
-        label={props.columnLabel}
-        placeholder={props.columnLabel}
-        id={props.columnFieldName}
+        disabled={disabled}
+        label={columnLabel}
+        placeholder={columnLabel}
+        id={columnFieldName}
         fullWidth
         variant="outlined"
-        value={props.value}
+        value={value}
         error={false}
         inputProps={{ spellCheck: "false" }}
-        onChange={props.onChange}
+        onChange={onChange}
       />
     </form>
   )
