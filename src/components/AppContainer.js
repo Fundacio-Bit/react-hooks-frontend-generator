@@ -4,6 +4,21 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { appSchema } from '../app-config'
 import { ResourceTab } from './resource/ResourceTab'
+import Ajv from 'ajv'
+
+const ajv = new Ajv({ allErrors: true })
+
+// Compiling schemas of columns
+// -----------------------------
+appSchema.forEach(resource => {
+  resource.columns.forEach(column => {
+    try {
+      column.validate = ajv.compile(column.schema)
+    } catch(error) {
+      console.log(`Problem detected compiling the schema: ${resource.resourceId} / ${column.fieldName}`)
+    }
+  })
+})
 
 export const AppContainer = () => {
 

@@ -29,7 +29,7 @@ export const appSchema = [
           label: 'Precio (€)',
           schema: {
             type: 'number',
-            minimum: 0
+            minimum: 4.99
           }
         },
         {

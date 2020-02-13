@@ -14,19 +14,20 @@ import ErrorIcon from '@material-ui/icons/Error'
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { DialogCreateUpdate } from './DialogCreateUpdate'
 import { DialogDelete } from './DialogDelete'
 import { baseErrorMessage, getErrorMessage } from '../utils/getErrorMessage'
 import axios from 'axios'
 // import { ArrayOfChipsCell } from './cell-components/ArrayOfChipsCell'
 import { TablePaginationActions } from './TablePaginationActions'
 
+import { FormsDialog } from './forms/FormsDialog'
+
 const useStyles2 = makeStyles(theme => ({
   paper: {
-    width: '96%',
+    width: '97%',
     marginTop: theme.spacing(2),
-    marginLeft: '2%',
-    marginRight: '2%',
+    marginLeft: '1.5%',
+    marginRight: '1.5%',
     overflowX: 'auto'
   },
   table: {
@@ -78,49 +79,67 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
 
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
-
-  const [openDialog, setOpenDialog] = useState(false)
-  const [openDialogDelete, setOpenDialogDelete] = useState(false)
-  const [selectedItem, setSelectedItem] = useState({})
-  const [errorStatus, setErrorStatus] = useState({error: false, message: ''})
-
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, items.length - page * rowsPerPage)
 
-  const primaryKeyField = columns.filter(x => x.isPrimaryKey).map(x => x.fieldName)[0]
-
-  // Handle change of page number and rows per page
-  // -----------------------------------------------
+  // Handle change of page number
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
   }
+
+  // Handle change of rows per page
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
 
-  // Empty item (with some default values) to be used to create new items
-  // ---------------------------------------------------------------------
-  let newItem = {}
-  columns.forEach(col => {
-    if (col.hasOwnProperty('defaultValue')) {
-      newItem[col.fieldName] = col.defaultValue
-    } else {
-      if (col.type === Array) newItem[col.fieldName] = []
-      else if (col.type === Object) newItem[col.fieldName] = {}
-      else newItem[col.fieldName] = ''
-    }
-  })
+  const [openFormsDialog, setOpenFormsDialog] = useState(false)
+  const [openDialogDelete, setOpenDialogDelete] = useState(false)
+  const [itemValues, setItemValues] = useState({})
+  const [errorStatus, setErrorStatus] = useState({ error: false, message: '' })
+  const primaryKeyField = columns.filter(x => x.isPrimaryKey).map(x => x.fieldName)[0]
+
+  // Preparing new item to open forms dialog
+  // ----------------------------------------
+  const prepareFormsNewItem = () => {
+    const newItem = { }
+    columns.forEach(col => {
+      newItem[col.fieldName] = ''
+    })
+    newItem[primaryKeyField] = 'new'
+    setItemValues(newItem)
+    setErrorStatus({ error: false, message: '' })
+    setOpenFormsDialog(true)
+  }
+
+  // Preparing item values to open forms dialog
+  // -------------------------------------------
+  const prepareFormsItemValues = (itemValues) => {
+    setItemValues(itemValues)
+    setErrorStatus({ error: false, message: '' })
+    setOpenFormsDialog(true)
+  }
 
   // Handle request to REST API
   // ---------------------------
   const onAxiosRequest = (method) => {
     setErrorStatus({ error: false, message: '' })
 
+    // Converting numeric strings to numeric types
+    let currentValues = {...itemValues}
+    columns.forEach(field => {
+      if (field.schema.type === 'number' && typeof(currentValues[field.fieldName]) === 'string') {
+        currentValues[field.fieldName] = parseFloat(currentValues[field.fieldName].trim().replace(',', '.'))
+      }
+      if (field.schema.type === 'integer' && typeof(currentValues[field.fieldName]) === 'string') {
+        currentValues[field.fieldName] = parseInt(currentValues[field.fieldName].trim(), 10)
+      }
+    })
+
     let reqConfig = {
       method: method,
       baseURL: restEndpoint,
-      url: method !== 'post' ? `/${selectedItem[primaryKeyField]}` : '',
-      data: method !== 'delete' ? {...selectedItem} : {},
+      url: method !== 'post' ? `/${itemValues[primaryKeyField]}` : '',
+      data: method !== 'delete' ? currentValues : {},
       headers: { authorization: window.sessionStorage.getItem('token') }
     }
 
@@ -186,7 +205,7 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
       <Toolbar variant="dense">
         {showErrorStatusOrLoading()}
         {!loading &&
-          <Button variant="contained" color="primary" size="small" className={classes.button} onClick={() => { setSelectedItem({...newItem}); setErrorStatus({ error: false, message: '' }); setOpenDialog(true) }}>
+          <Button variant="contained" color="primary" size="small" className={classes.button} onClick={() => { prepareFormsNewItem() }}>
             <span style={{ fontSize: 11.5 }}>Crear Entrada</span>
           </Button>}
       </Toolbar>
@@ -221,12 +240,12 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
                     </StyledTableCell>
                   ))}
                   <StyledTableCell>
-                    <Button size={'small'} onClick={() => { setSelectedItem({...row}); setErrorStatus({ error: false, message: '' }); setOpenDialog(true) }} disabled={loading}>
+                    <Button size={'small'} onClick={() => { prepareFormsItemValues({...row}) }} disabled={loading}>
                       <EditOutlinedIcon fontSize="small" style={{ color: '#252525' }} />
                     </Button>
                   </StyledTableCell>
                   <StyledTableCell>
-                    <Button size={'small'} onClick={() => { setSelectedItem({...row}); setErrorStatus({ error: false, message: '' }); setOpenDialogDelete(true) }} disabled={loading}>
+                    <Button size={'small'} onClick={() => { setItemValues({...row}); setErrorStatus({ error: false, message: '' }); setOpenDialogDelete(true) }} disabled={loading}>
                       <DeleteOutlinedIcon fontSize="small" style={{ color: '#252525' }} />
                     </Button>
                   </StyledTableCell>
@@ -257,19 +276,20 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
         </div>
       </Paper>
 
-      <DialogCreateUpdate
-        open={openDialog}
-        setOpen={setOpenDialog}
-        columns={columns}
-        selectedItem={selectedItem}
-        setSelectedItem={setSelectedItem}
-        onSave={() => { selectedItem.hasOwnProperty(primaryKeyField) ? onAxiosRequest('put') : onAxiosRequest('post') }}
+      <FormsDialog
+        open={openFormsDialog}
+        setOpen={setOpenFormsDialog}
+        dialogType={'FullScreenDialog'}
+        fields={columns}
+        itemValues={itemValues}
+        setItemValues={setItemValues}
+        onSave={() => { itemValues[primaryKeyField] === 'new' ? onAxiosRequest('post') : onAxiosRequest('put') }}
       />
 
       <DialogDelete
         open={openDialogDelete}
         setOpen={setOpenDialogDelete}
-        itemFirstField={selectedItem[columns[0].fieldName]}
+        itemFirstField={itemValues[columns[0].fieldName]}
         onDelete={() => { onAxiosRequest('delete') }}
       />
     </div>
