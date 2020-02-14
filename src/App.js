@@ -6,8 +6,8 @@ import Typography from '@material-ui/core/Typography'
 import { Profile } from './components/Profile'
 import { Login } from './components/Login'
 import { AppContainer } from './components/AppContainer'
-import { loginEndpoint } from './app-config'
 import { enableLogin } from './app-config'
+import { login } from './app-config'
 
 const useStyles = makeStyles({
   grow: {
@@ -37,7 +37,8 @@ export const App = () => {
       </AppBar>
       {enableLogin && !isLogged &&
         <Login
-          endpoint={loginEndpoint}
+          endpoint={login.endpoint}
+          fields={login.fields}
           setIsLogged={setIsLogged}
           setLoggedProfile={setLoggedProfile}
         />}

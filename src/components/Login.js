@@ -48,21 +48,21 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const Login = ({ endpoint, setLoggedProfile, setIsLogged }) => {
+export const Login = ({ endpoint, fields, setLoggedProfile, setIsLogged }) => {
   const classes = useStyles()
 
   const [username, setUsername] = useState('')
-  const [pwd, setPwd] = useState('')
+  const [password, setPassword] = useState('')
   const [loginStatus, setLoginStatus] = useState({error: false, message: ''})
 
   const handleClickButton = () => {
     if (username === '') return setLoginStatus({error: true, message: 'Debe rellenar el campo Nombre de usuario'})
-    if (pwd === '') return setLoginStatus({error: true, message: 'Debe rellenar el campo Contraseña'})
+    if (password === '') return setLoginStatus({error: true, message: 'Debe rellenar el campo Contraseña'})
     setLoginStatus({ error: false, message: '' })
 
     // Connect to login endpoint
     // --------------------------
-    axios.post(endpoint, { username: username, pwd: pwd })
+    axios.post(endpoint, { [fields.username]: username, [fields.password]: password })
       .then(response => {
 
         // OK. Set session parameters
@@ -131,8 +131,8 @@ export const Login = ({ endpoint, setLoggedProfile, setIsLogged }) => {
               type="password"
               id="password"
               autoComplete="current-password"
-              value={pwd}
-              onChange={event => setPwd(event.target.value)}
+              value={password}
+              onChange={event => setPassword(event.target.value)}
             />
           </FormControl>
           <br />
