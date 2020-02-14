@@ -200,6 +200,28 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
     }
   }
 
+  const generateRowCells = (row) => {
+    let rowCells = []
+
+    columns.forEach((col, index) => {
+      if (col.isForeignKey) {  // in the future include embedded foreign values in the cell
+        rowCells.push(
+          <StyledTableCell align="left" key={index}>
+            {row[col.fieldName]}
+          </StyledTableCell>
+        )
+      } else {
+        rowCells.push(
+          <StyledTableCell align="left" key={index}>
+            {row[col.fieldName]}
+          </StyledTableCell>
+        )
+      }
+    })
+
+    return rowCells
+  }
+
   return (
     <div>
       <Toolbar variant="dense">
@@ -234,11 +256,7 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
                 : items
               ).map((row, i) => (
                 <StyledTableRow key={i}>
-                  {columns.map((col, j) => (
-                    <StyledTableCell align="left" key={j}>
-                      {row[col.fieldName]}
-                    </StyledTableCell>
-                  ))}
+                  {generateRowCells({...row})}
                   <StyledTableCell>
                     <Button size={'small'} onClick={() => { prepareFormsItemValues({...row}) }} disabled={loading}>
                       <EditOutlinedIcon fontSize="small" style={{ color: '#252525' }} />
