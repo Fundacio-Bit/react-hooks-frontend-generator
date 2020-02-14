@@ -12,8 +12,15 @@ npm install
 
 ### 1. Define the App configuration schema in *src/app-config.js*
 ~~~javascript
-export const enableLogin = false
-export const loginEndpoint = 'http://127.0.0.1:5000/login'
+export const enableLogin = true
+
+export const login = {
+  endpoint: 'http://127.0.0.1:5000/login',
+  fields: {
+    username: 'username',
+    password: 'pwd'
+  }
+}
 
 export const appSchema = [
     {
