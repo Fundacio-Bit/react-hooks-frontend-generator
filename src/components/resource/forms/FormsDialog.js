@@ -32,7 +32,8 @@ export const FormsDialog = ({ open, setOpen, dialogType, fields, itemValues, set
   // Validates forms before saving
   // ------------------------------
   const handleSave = () => {
-    let currentStatuses = {...validationStatuses}
+    let statuses = {}
+    fields.forEach(field => { statuses[field.fieldName] = { error: false, message: '' } })
     let currentValues = {...itemValues}
 
     fields.forEach(field => {
@@ -42,9 +43,8 @@ export const FormsDialog = ({ open, setOpen, dialogType, fields, itemValues, set
       // String to number case (integer or float)
       if (currentType === 'number' && typeof(currentValues[currentField]) === 'string') {
         if (!(/^-?\d+\.?\d*$/.test(currentValues[currentField].trim().replace(',', '.')))) {
-          currentStatuses[currentField] = { error: true, message: 'El valor debe ser numérico' }
+          statuses[currentField] = { error: true, message: 'El valor debe ser numérico' }
         } else {
-          currentStatuses[currentField] = { error: false, message: '' }
           currentValues[currentField] = parseFloat(currentValues[currentField].trim().replace(',', '.'))
         }
       }
@@ -52,31 +52,28 @@ export const FormsDialog = ({ open, setOpen, dialogType, fields, itemValues, set
       // String to integer case
       if (currentType === 'integer' && typeof(currentValues[currentField]) === 'string') {
         if (!(/^-?\d+$/.test(currentValues[currentField].trim()))) {
-          currentStatuses[currentField] = { error: true, message: 'El valor debe ser entero' }
+          statuses[currentField] = { error: true, message: 'El valor debe ser entero' }
         } else {
-          currentStatuses[currentField] = { error: false, message: '' }
           currentValues[currentField] = parseInt(currentValues[currentField].trim(), 10)
         }
       }
 
       // Validate current value with JSON schema
       // ----------------------------------------
-      if (!currentStatuses[currentField].error) {  // skip validation if there are previous errors
+      if (!statuses[currentField].error) {  // skip validation if there are previous errors
         let validate = field.validate
         if (!validate(currentValues[currentField])) {
-          currentStatuses[currentField] = { error: true, message: `Valor inválido (${validate.errors.map(x => x.message).join(', ')})` }
-        } else {
-          currentStatuses[currentField] = { error: false, message: '' }
+          statuses[currentField] = { error: true, message: `Valor inválido (${validate.errors.map(x => x.message).join(', ')})` }
         }
       }
 
     })
 
-    if (Object.values(currentStatuses).filter(x => x.error).length === 0) {
+    if (Object.values(statuses).filter(x => x.error).length === 0) {
       onSave()
       setOpen(false)
     } else {
-      setValidationStatuses({...currentStatuses})
+      setValidationStatuses(statuses)
     }
 
   }
