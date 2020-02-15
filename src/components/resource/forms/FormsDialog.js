@@ -58,6 +58,11 @@ export const FormsDialog = ({ open, setOpen, dialogType, fields, itemValues, set
         }
       }
 
+      // Check if a foreign key column has value = ''
+      if (field.isForeignKey && currentValues[currentField] === '') {
+        statuses[currentField] = { error: true, message: 'Seleccione una opción de la lista' }
+      }
+
       // Validate current value with JSON schema
       // ----------------------------------------
       if (!statuses[currentField].error) {  // skip validation if there are previous errors

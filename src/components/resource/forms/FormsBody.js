@@ -32,7 +32,8 @@ export const FormsBody = ({ fields, itemValues, setItemValues, validationStatuse
             endpoint={field.isForeignKey.endpoint}
             idField={field.isForeignKey.idField}
             shownFields={field.isForeignKey.shownFields}
-            error={false}
+            error={validationStatuses[field.fieldName].error}
+            errorMessage={validationStatuses[field.fieldName].message}
             onChange={(e) => { handleChange(field.fieldName, e.target.value) }}
           />
         )

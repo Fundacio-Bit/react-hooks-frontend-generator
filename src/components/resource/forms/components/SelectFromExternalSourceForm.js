@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import axios from 'axios'
@@ -15,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const SelectFromExternalSourceForm = ({ name, label, value, endpoint, idField, shownFields, error, onChange }) => {
+export const SelectFromExternalSourceForm = ({ name, label, value, endpoint, idField, shownFields, error, errorMessage, onChange }) => {
   const classes = useStyles()
   const [selectedValue, setSelectedValue] = useState('')  // important: initial value for Select component must be set to ''.
   const [values, setValues] = useState([])
@@ -69,6 +70,7 @@ export const SelectFromExternalSourceForm = ({ name, label, value, endpoint, idF
           <MenuItem key={index} value={item[idField]}>{shownFields.map((x, i) => i === 0 ? item[x] : `[${item[x]}]`).join(' ')}</MenuItem>
         ))}
         </Select>
+        <FormHelperText>{errorMessage}</FormHelperText>
       </FormControl>
     </div>
   )
