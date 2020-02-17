@@ -26,6 +26,7 @@ export const FormsBody = ({ fields, itemValues, setItemValues, validationStatuse
         forms.push(
           <SelectFromExternalSourceForm
             key={index}
+            disabled={(field.notEditable && itemValues[primaryKeyField] !== 'new') ? true : false}
             name={field.fieldName}
             label={field.label}
             value={itemValues[field.fieldName]}

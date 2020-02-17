@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const SelectFromExternalSourceForm = ({ name, label, value, endpoint, idField, shownFields, error, errorMessage, onChange }) => {
+export const SelectFromExternalSourceForm = ({ disabled, name, label, value, endpoint, idField, shownFields, error, errorMessage, onChange }) => {
   const classes = useStyles()
   const [selectedValue, setSelectedValue] = useState('')  // important: initial value for Select component must be set to ''.
   const [values, setValues] = useState([])
@@ -59,7 +59,7 @@ export const SelectFromExternalSourceForm = ({ name, label, value, endpoint, idF
 
   return (
     <div>
-      <FormControl className={classes.formControl} error={error}>
+      <FormControl className={classes.formControl} error={error} disabled={disabled}>
       <InputLabel id={name}>{label}</InputLabel>
         <Select
           id={name}
