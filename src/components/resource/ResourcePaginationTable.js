@@ -103,7 +103,13 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
   const prepareFormsNewItem = () => {
     const newItem = { }
     columns.forEach(col => {
-      newItem[col.fieldName] = ''
+      if (col.schema.type === 'array') {
+        newItem[col.fieldName] = []
+      } else if (col.schema.type === 'object') {
+        newItem[col.fieldName] = {}
+      } else {
+        newItem[col.fieldName] = ''
+      }
     })
     newItem[primaryKeyField] = 'new'
     setItemValues(newItem)
@@ -226,7 +232,7 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
               />
             </StyledTableCell>
           )
-        } else {
+        } else {  // show as string by default
           rowCells.push(
             <StyledTableCell align="left" key={index}>
               {rowObj[col.fieldName]}
