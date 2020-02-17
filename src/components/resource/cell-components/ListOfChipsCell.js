@@ -6,17 +6,25 @@ const useStyles = makeStyles(theme => ({
   cell: {
     display: 'flex',
     justifyContent: 'left',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    '& > *': {
+      margin: theme.spacing(0.1),
+    },
   }
 }))
 
-export const ArrayOfChipsCell = (props) => {
+export const ListOfChipsCell = ({ values }) => {
   const classes = useStyles()
 
   return (
     <div className={classes.cell}>
-      {props.values.map((value, index) => (
-        <Chip size="small" label={value} key={index} />
+      {values.map((value, index) => (
+        <Chip
+          key={index}
+          variant="outlined"
+          size="small"
+          label={value}
+        />
       ))}
     </div>
   )

@@ -17,10 +17,10 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { DialogDelete } from './DialogDelete'
 import { baseErrorMessage, getErrorMessage } from '../utils/getErrorMessage'
 import axios from 'axios'
-// import { ArrayOfChipsCell } from './cell-components/ArrayOfChipsCell'
 import { TablePaginationActions } from './TablePaginationActions'
 
 import { FormsDialog } from './forms/FormsDialog'
+import { ListOfChipsCell } from './cell-components/ListOfChipsCell'
 
 const useStyles2 = makeStyles(theme => ({
   paper: {
@@ -200,22 +200,40 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
     }
   }
 
-  const generateRowCells = (row) => {
+  const generateRowCells = (rowObj) => {
     let rowCells = []
 
     columns.forEach((col, index) => {
-      if (col.isForeignKey) {  // in the future include embedded foreign values in the cell
+      if (!rowObj.hasOwnProperty(col.fieldName)) {
         rowCells.push(
           <StyledTableCell align="left" key={index}>
-            {row[col.fieldName]}
+            {' '}
           </StyledTableCell>
         )
       } else {
-        rowCells.push(
-          <StyledTableCell align="left" key={index}>
-            {row[col.fieldName]}
-          </StyledTableCell>
-        )
+
+        if (col.isForeignKey) {  // in the future include embedded foreign values in the cell
+          rowCells.push(
+            <StyledTableCell align="left" key={index}>
+              {rowObj[col.fieldName]}
+            </StyledTableCell>
+          )
+        } else if (col.schema.type === 'array') {
+          rowCells.push(
+            <StyledTableCell align="left" key={index}>
+              <ListOfChipsCell
+                values={rowObj[col.fieldName]}
+              />
+            </StyledTableCell>
+          )
+        } else {
+          rowCells.push(
+            <StyledTableCell align="left" key={index}>
+              {rowObj[col.fieldName]}
+            </StyledTableCell>
+          )
+        }
+
       }
     })
 
