@@ -65,7 +65,7 @@ export const FormsBody = ({ fields, itemValues, setItemValues, validationStatuse
               value={itemValues[field.fieldName]}
               error={validationStatuses[field.fieldName].error}
               errorMessage={validationStatuses[field.fieldName].message}
-              onChange={(e) => { handleChange(field.fieldName, e.target.value.split(',')) }}
+              onChange={(e) => { handleChange(field.fieldName, e.target.value) }}
             />
           )
         } else {  // show as string by default
