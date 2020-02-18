@@ -120,6 +120,17 @@ export const ResourcePaginationTable = ({ restEndpoint, columns, items, loading,
   // Preparing item values to open forms dialog
   // -------------------------------------------
   const prepareFormsItemValues = (itemValues) => {
+    columns.forEach(col => {
+      if (!itemValues.hasOwnProperty(col.fieldName)) {
+        if (col.schema.type === 'array') {
+          itemValues[col.fieldName] = []
+        } else if (col.schema.type === 'object') {
+          itemValues[col.fieldName] = {}
+        } else {
+          itemValues[col.fieldName] = ''
+        }
+      }
+    })
     setItemValues(itemValues)
     setErrorStatus({ error: false, message: '' })
     setOpenFormsDialog(true)
