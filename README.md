@@ -12,7 +12,7 @@ npm install
 
 ### 1. Define the App configuration schema in *src/app-config.js*
 ~~~javascript
-export const enableLogin = true
+export const enableLogin = false
 
 export const login = {
   endpoint: 'http://127.0.0.1:5000/login',
@@ -61,6 +61,18 @@ export const appSchema = [
             endpoint: 'http://127.0.0.1:5000/suppliers',
             idField: 'supplier_id',
             shownFields: ['name', 'supplier_id']
+          }
+        },
+        {
+          fieldName: 'available_colors',
+          label: 'Colores disponibles',
+          schema: {
+            type: "array",
+            items: {
+              type: "string",
+              enum: ["red", "blue", "green", "yellow", "black", "white"]
+            },
+            uniqueItems: true
           }
         }
       ]
