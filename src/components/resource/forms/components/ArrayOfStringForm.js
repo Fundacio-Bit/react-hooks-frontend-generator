@@ -39,7 +39,7 @@ export const ArrayOfStringForm = ({ disabled, name, label, value, error, errorMe
   }
 
   const handleDeleteChip = (chipToDelete) => () => {
-    onChange({ target: { value: [...value].filter(chip => chip !== chipToDelete) }})
+    onChange({ target: { value: [...value].filter((chip, index) => index !== chipToDelete) }})
   }
 
   return (
@@ -51,7 +51,7 @@ export const ArrayOfStringForm = ({ disabled, name, label, value, error, errorMe
             variant="outlined"
             size="small"
             label={elem}
-            onDelete={handleDeleteChip(elem)}
+            onDelete={handleDeleteChip(index)}
           />
         ))}
       </div>

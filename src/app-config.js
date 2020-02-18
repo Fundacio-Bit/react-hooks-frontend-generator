@@ -55,8 +55,10 @@ export const appSchema = [
           schema: {
             type: "array",
             items: {
-              type: "string"
-            }
+              type: "string",
+              enum: ["red", "blue", "green", "yellow", "black", "white"]
+            },
+            uniqueItems: true
           }
         }
       ]
