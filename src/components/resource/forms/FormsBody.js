@@ -24,72 +24,41 @@ export const FormsBody = ({ fields, itemValues, setItemValues, validationStatuse
     let forms = []
 
     fields.forEach((field, index) => {
-      if (!itemValues.hasOwnProperty(field.fieldName)) {
+      if (field.isForeignKey) {
         forms.push(
-          <StringForm
+          <SelectFromExternalSourceForm
             key={index}
-            disabled={(field.isPrimaryKey || (field.notEditable && itemValues[primaryKeyField] !== 'new')) ? true : false}
+            disabled={(field.notEditable && itemValues[primaryKeyField] !== 'new') ? true : false}
             name={field.fieldName}
             label={field.label}
-            value={''}
+            value={itemValues[field.fieldName]}
+            endpoint={field.isForeignKey.endpoint}
+            idField={field.isForeignKey.idField}
+            shownFields={field.isForeignKey.shownFields}
             error={validationStatuses[field.fieldName].error}
             errorMessage={validationStatuses[field.fieldName].message}
-            onChange={() => {}}
-            onBlur={() => {}}
+            onChange={(e) => { handleChange(field.fieldName, e.target.value) }}
           />
         )
-      } else {
+      } else if (field.schema.type === 'array') {
 
-        if (field.isForeignKey) {
+        if (field.schema.items.hasOwnProperty('enum')) {
           forms.push(
-            <SelectFromExternalSourceForm
+            <ArrayOfStringEnumeratedForm
               key={index}
-              disabled={(field.notEditable && itemValues[primaryKeyField] !== 'new') ? true : false}
+              disabled={(field.isPrimaryKey || (field.notEditable && itemValues[primaryKeyField] !== 'new')) ? true : false}
               name={field.fieldName}
               label={field.label}
               value={itemValues[field.fieldName]}
-              endpoint={field.isForeignKey.endpoint}
-              idField={field.isForeignKey.idField}
-              shownFields={field.isForeignKey.shownFields}
+              allowedValues={field.schema.items.enum}
               error={validationStatuses[field.fieldName].error}
               errorMessage={validationStatuses[field.fieldName].message}
               onChange={(e) => { handleChange(field.fieldName, e.target.value) }}
             />
           )
-        } else if (field.schema.type === 'array') {
-
-          if (field.schema.items.hasOwnProperty('enum')) {
-            forms.push(
-              <ArrayOfStringEnumeratedForm
-                key={index}
-                disabled={(field.isPrimaryKey || (field.notEditable && itemValues[primaryKeyField] !== 'new')) ? true : false}
-                name={field.fieldName}
-                label={field.label}
-                value={itemValues[field.fieldName]}
-                allowedValues={field.schema.items.enum}
-                error={validationStatuses[field.fieldName].error}
-                errorMessage={validationStatuses[field.fieldName].message}
-                onChange={(e) => { handleChange(field.fieldName, e.target.value) }}
-              />
-            )
-          } else {
-            forms.push(
-              <ArrayOfStringForm
-                key={index}
-                disabled={(field.isPrimaryKey || (field.notEditable && itemValues[primaryKeyField] !== 'new')) ? true : false}
-                name={field.fieldName}
-                label={field.label}
-                value={itemValues[field.fieldName]}
-                error={validationStatuses[field.fieldName].error}
-                errorMessage={validationStatuses[field.fieldName].message}
-                onChange={(e) => { handleChange(field.fieldName, e.target.value) }}
-              />
-            )
-          }
-
-        } else {  // show as string by default
+        } else {
           forms.push(
-            <StringForm
+            <ArrayOfStringForm
               key={index}
               disabled={(field.isPrimaryKey || (field.notEditable && itemValues[primaryKeyField] !== 'new')) ? true : false}
               name={field.fieldName}
@@ -98,11 +67,24 @@ export const FormsBody = ({ fields, itemValues, setItemValues, validationStatuse
               error={validationStatuses[field.fieldName].error}
               errorMessage={validationStatuses[field.fieldName].message}
               onChange={(e) => { handleChange(field.fieldName, e.target.value) }}
-              onBlur={() => {}}
             />
           )
         }
 
+      } else {  // show as string by default
+        forms.push(
+          <StringForm
+            key={index}
+            disabled={(field.isPrimaryKey || (field.notEditable && itemValues[primaryKeyField] !== 'new')) ? true : false}
+            name={field.fieldName}
+            label={field.label}
+            value={itemValues[field.fieldName]}
+            error={validationStatuses[field.fieldName].error}
+            errorMessage={validationStatuses[field.fieldName].message}
+            onChange={(e) => { handleChange(field.fieldName, e.target.value) }}
+            onBlur={() => {}}
+          />
+        )
       }
     })
 
