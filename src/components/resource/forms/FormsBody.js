@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { StringForm } from './components/StringForm'
 import { SelectFromExternalSourceForm } from './components/SelectFromExternalSourceForm'
 import { ArrayOfStringForm } from './components/ArrayOfStringForm'
+import { ArrayOfStringEnumeratedForm } from './components/ArrayOfStringEnumeratedForm'
 
 const useStyles = makeStyles(theme => ({
   formSection: {
@@ -56,18 +57,36 @@ export const FormsBody = ({ fields, itemValues, setItemValues, validationStatuse
             />
           )
         } else if (field.schema.type === 'array') {
-          forms.push(
-            <ArrayOfStringForm
-              key={index}
-              disabled={(field.isPrimaryKey || (field.notEditable && itemValues[primaryKeyField] !== 'new')) ? true : false}
-              name={field.fieldName}
-              label={field.label}
-              value={itemValues[field.fieldName]}
-              error={validationStatuses[field.fieldName].error}
-              errorMessage={validationStatuses[field.fieldName].message}
-              onChange={(e) => { handleChange(field.fieldName, e.target.value) }}
-            />
-          )
+
+          if (field.schema.items.hasOwnProperty('enum')) {
+            forms.push(
+              <ArrayOfStringEnumeratedForm
+                key={index}
+                disabled={(field.isPrimaryKey || (field.notEditable && itemValues[primaryKeyField] !== 'new')) ? true : false}
+                name={field.fieldName}
+                label={field.label}
+                value={itemValues[field.fieldName]}
+                allowedValues={field.schema.items.enum}
+                error={validationStatuses[field.fieldName].error}
+                errorMessage={validationStatuses[field.fieldName].message}
+                onChange={(e) => { handleChange(field.fieldName, e.target.value) }}
+              />
+            )
+          } else {
+            forms.push(
+              <ArrayOfStringForm
+                key={index}
+                disabled={(field.isPrimaryKey || (field.notEditable && itemValues[primaryKeyField] !== 'new')) ? true : false}
+                name={field.fieldName}
+                label={field.label}
+                value={itemValues[field.fieldName]}
+                error={validationStatuses[field.fieldName].error}
+                errorMessage={validationStatuses[field.fieldName].message}
+                onChange={(e) => { handleChange(field.fieldName, e.target.value) }}
+              />
+            )
+          }
+
         } else {  // show as string by default
           forms.push(
             <StringForm
