@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
     width: '30%'
   },
   button: {
-    marginTop: theme.spacing(0.5)
+    marginTop: theme.spacing(1)
   },
   cell: {
     padding: theme.spacing(1),
@@ -72,7 +72,7 @@ export const ArrayOfStringForm = ({ disabled, name, label, value, error, errorMe
           />
           &nbsp;&nbsp;
           <Button className={classes.button} onClick={handleAddElement}>
-            <AddCircleOutlineOutlinedIcon fontSize="large" style={{ color: '#a6a6a6' }} />
+            <AddCircleOutlineOutlinedIcon style={{ color: '#a6a6a6' }} />
           </Button>
         </form>
       </div>
