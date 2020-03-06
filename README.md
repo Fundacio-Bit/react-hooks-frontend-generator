@@ -1,6 +1,8 @@
 # react-hooks-frontend-generator #
 
-A generator of front-ends based on React Hooks and JSON Schema. You can specify a REST API endpoint and the fields returned by the REST as columns to generate a UI with a table of items with CRUD options.
+A generator of front-ends based on React Hooks and JSON Schema.
+
+You can configure a REST API endpoint and the item fields of the API as columns to generate a UI that contains a table of items with CRUD options.
 
 ## Installation
 
