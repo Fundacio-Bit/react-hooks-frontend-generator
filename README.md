@@ -1,6 +1,6 @@
 # react-hooks-frontend-generator #
 
-A generator of FrontEnds based on React Hooks.
+A generator of front-ends based on React Hooks.
 
 ## Installation
 
